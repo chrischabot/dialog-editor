@@ -17,6 +17,10 @@ interface CacheEntry {
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
+function resetDbPromise() {
+  dbPromise = null;
+}
+
 /**
  * Open or create the IndexedDB database
  */
@@ -24,15 +28,40 @@ function openDB(): Promise<IDBDatabase> {
   if (dbPromise) return dbPromise;
 
   dbPromise = new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') {
+      reject(new Error('IndexedDB is not available in this environment'));
+      resetDbPromise();
+      return;
+    }
+
     const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onblocked = () => {
+      const error = new Error('IndexedDB open request was blocked (another tab may be holding an old connection)');
+      console.warn(error.message);
+      resetDbPromise();
+      reject(error);
+    };
 
     request.onerror = () => {
       console.error('Failed to open audio cache DB:', request.error);
+      resetDbPromise();
       reject(request.error);
     };
 
     request.onsuccess = () => {
-      resolve(request.result);
+      const db = request.result;
+
+      // If another tab upgrades the DB, close our connection so future calls can reopen.
+      db.onversionchange = () => {
+        try {
+          db.close();
+        } finally {
+          resetDbPromise();
+        }
+      };
+
+      resolve(db);
     };
 
     request.onupgradeneeded = (event) => {

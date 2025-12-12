@@ -238,6 +238,38 @@ Accents: [American accent], [British accent], [Australian accent], [Irish accent
 - **Be specific:** `[slightly nervous]` over just `[nervous]`
 - **Test iterations:** Multiple generations may be needed for best results
 
+### Where Tags Come From (How to “Get” Tags)
+
+The SDK/API does **not** provide a “list all supported audio tags” endpoint. In practice you’ll use a combination of:
+
+- **ElevenLabs docs + examples** (good for learning syntax and common tags).
+- **Empirical testing** (some tags/phrasing may be ignored or behave differently depending on voice/model).
+- **Dialogue Director’s built-in catalog**, which is a curated list used by the UI:
+  - Source of truth: `src/lib/audioTags.ts`
+  - It powers the tag palette and tooltips in the editor.
+
+If you discover a new tag you want in the UI, add it to the `AUDIO_TAGS` array in `src/lib/audioTags.ts` (choose a `TagCategory`, provide a short description and an example). The editor inserts `[\${tag.tag}]` into your text verbatim, so the `tag` string should match what you want inside the brackets.
+
+### How Tags Are Applied in Dialogue Director
+
+- Tags are inserted directly into line text as `[...]` markers.
+- A tag affects the spoken delivery **from its position onward** (until the next tag or end of the line).
+- The editor does not “wrap” ranges (no rich-text model); the stored script is always plain text with inline markers.
+
+**Tip:** If you want a tag to affect the entire line, place it at the start:
+```text
+[excited] We did it!
+```
+
+### Validating Tags (Local Helpers)
+
+Dialogue Director includes utilities to help keep scripts clean:
+
+- `validateTags(text)` in `src/lib/audioTags.ts` detects unbalanced brackets and unknown tags (based on the local catalog).
+- `searchTags(query)` in `src/lib/audioTags.ts` helps find tags by name/description (used for building UI/search features).
+
+These helpers validate against the app’s catalog (not the API), so a “valid” tag here still might be ignored by the model, and an “unknown” tag might still work if ElevenLabs adds new tags.
+
 ### Audio Tags in Regular TTS vs Dialogue API
 
 **Critical Finding:** Audio tags like `[excited]`, `[whispers]`, `[laughs]` are **only interpreted by the Dialogue API**. When sent to the regular Text-to-Speech API, they are pronounced literally as words.

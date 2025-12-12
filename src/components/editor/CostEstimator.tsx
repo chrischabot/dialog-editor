@@ -1,122 +1,55 @@
-'use client';
+"use client";
 
-import { AlertTriangle, ExternalLink } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { estimateDialogueCost } from "@/lib/dialogue";
+import type { Dialogue } from "@/types/dialogue";
 
 interface CostEstimatorProps {
-  characterCount: number;
-  characterLimit?: number; // From user subscription
+  dialogue: Dialogue;
+  modelMode: "fast" | "full";
 }
 
-export function CostEstimator({ characterCount, characterLimit }: CostEstimatorProps) {
-  const hasLimit = characterLimit !== undefined && characterLimit > 0;
-  const usagePercentage = hasLimit ? (characterCount / characterLimit) * 100 : 0;
-  const isOverLimit = hasLimit && characterCount > characterLimit;
-  const isNearLimit = hasLimit && usagePercentage > 80 && !isOverLimit;
-  const isHighCount = characterCount > 5000;
+/**
+ * Displays estimated credit cost based on character count and model mode
+ */
+export function CostEstimator({ dialogue, modelMode }: CostEstimatorProps) {
+  const { characterCount, estimatedCredits, creditsPerChar } = React.useMemo(
+    () => estimateDialogueCost(dialogue, modelMode),
+    [dialogue, modelMode]
+  );
 
-  // Format numbers with commas
-  const formatNumber = (num: number) => {
-    return num.toLocaleString();
-  };
+  const percentage = Math.min((characterCount / 10000) * 100, 100);
 
   return (
-    <div className="border rounded-lg bg-card p-4 space-y-4">
-      {/* Header */}
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">Estimated Cost</h3>
-        <a
-          href="https://elevenlabs.io/pricing"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
-        >
-          Pricing Info
-          <ExternalLink className="h-3 w-3" />
-        </a>
+        <span className="text-xs text-gray-400">
+          {creditsPerChar} credit/char
+        </span>
       </div>
-
-      <Separator />
-
-      {/* Character Count */}
       <div className="space-y-2">
-        <div className="flex items-baseline justify-between">
-          <span className="text-sm text-muted-foreground">Character Count</span>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-semibold tabular-nums">
-              {formatNumber(characterCount)}
-            </span>
-            {hasLimit && (
-              <span className="text-sm text-muted-foreground">
-                / {formatNumber(characterLimit)}
-              </span>
-            )}
-          </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-500">Characters</span>
+          <span className="font-medium">{characterCount.toLocaleString()}</span>
         </div>
-
-        {/* Progress Bar */}
-        {hasLimit && (
-          <div className="space-y-2">
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className={`h-full transition-all duration-300 ${
-                  isOverLimit
-                    ? 'bg-destructive'
-                    : isNearLimit
-                    ? 'bg-yellow-500'
-                    : 'bg-primary'
-                }`}
-                style={{
-                  width: `${Math.min(usagePercentage, 100)}%`
-                }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>{usagePercentage.toFixed(1)}% used</span>
-              {isOverLimit && (
-                <span className="text-destructive font-medium">
-                  {formatNumber(characterCount - characterLimit)} over limit
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Warnings */}
-      {(isHighCount || isOverLimit || isNearLimit) && (
-        <>
-          <Separator />
-          <div className="space-y-2">
-            {isOverLimit && (
-              <Badge variant="destructive" className="gap-1.5 w-full justify-center">
-                <AlertTriangle className="h-3 w-3" />
-                Character limit exceeded
-              </Badge>
+        <div className="h-2 w-full rounded-full bg-gray-alpha-200 overflow-hidden">
+          <div
+            className={cn(
+              "h-full transition-all duration-300",
+              percentage > 80 ? "bg-red-500" : percentage > 50 ? "bg-amber-500" : "bg-green-500"
             )}
-            {isNearLimit && (
-              <Badge variant="outline" className="gap-1.5 w-full justify-center border-yellow-500 text-yellow-600 dark:text-yellow-500">
-                <AlertTriangle className="h-3 w-3" />
-                Near character limit
-              </Badge>
-            )}
-            {isHighCount && !hasLimit && (
-              <Badge variant="outline" className="gap-1.5 w-full justify-center border-yellow-500 text-yellow-600 dark:text-yellow-500">
-                <AlertTriangle className="h-3 w-3" />
-                High character count (&gt; 5,000)
-              </Badge>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* Info */}
-      <div className="text-xs text-muted-foreground space-y-1">
-        <p>Character count excludes audio tags.</p>
-        {!hasLimit && (
-          <p className="text-yellow-600 dark:text-yellow-500">
-            Connect your ElevenLabs account to see usage limits.
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-500">Estimated credits</span>
+          <span className="font-medium">{estimatedCredits.toLocaleString()}</span>
+        </div>
+        {modelMode === "fast" && (
+          <p className="text-xs text-gray-400">
+            Note: Generate All uses Full (1 credit/char)
           </p>
         )}
       </div>

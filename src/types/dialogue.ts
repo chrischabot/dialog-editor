@@ -46,14 +46,6 @@ export interface AudioTag {
   syntax: 'inline';      // All tags use [tag] inline syntax per SDK findings
 }
 
-/**
- * A tag that has been applied to a specific position in dialogue text
- */
-export interface AppliedTag {
-  tagId: string;   // Reference to AudioTag.id
-  position: number; // Character position in text where tag appears
-}
-
 // ============================================================================
 // Dialogue Line Types
 // ============================================================================
@@ -65,7 +57,6 @@ export interface DialogueLine {
   id: string;
   speakerId: string;      // Reference to Speaker.id
   text: string;           // Text content with inline tags (e.g., "[excited]Hello![/excited]")
-  tags: AppliedTag[];     // Applied tags with positions
   generatedAudio?: string; // Base64 encoded audio or blob URL
   isGenerating?: boolean;  // True while API call is in progress
 }
@@ -296,8 +287,7 @@ export function isDialogueLine(value: unknown): value is DialogueLine {
     value !== null &&
     'id' in value &&
     'speakerId' in value &&
-    'text' in value &&
-    'tags' in value
+    'text' in value
   );
 }
 

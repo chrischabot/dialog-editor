@@ -10,8 +10,6 @@ interface DialogueState {
   currentDialogueId: string | null;
   apiKey: string | null;
   voices: ElevenLabsVoice[];
-  isApiKeyValid: boolean;
-  isLoadingVoices: boolean;
 
   // Actions for dialogues
   createDialogue: (title: string, description?: string) => string;
@@ -30,14 +28,10 @@ interface DialogueState {
   updateLine: (lineId: string, text: string) => void;
   removeLine: (lineId: string) => void;
   reorderLines: (fromIndex: number, toIndex: number) => void;
-  setLineGenerating: (lineId: string, isGenerating: boolean) => void;
-  setLineAudio: (lineId: string, audioUrl: string) => void;
 
   // Actions for API
   setApiKey: (key: string) => void;
-  setApiKeyValid: (valid: boolean) => void;
   setVoices: (voices: ElevenLabsVoice[]) => void;
-  setLoadingVoices: (loading: boolean) => void;
 }
 
 // Helper function to generate speaker colors
@@ -66,8 +60,6 @@ export const useDialogueStore = create<DialogueState>()(
       currentDialogueId: null,
       apiKey: null,
       voices: [],
-      isApiKeyValid: false,
-      isLoadingVoices: false,
 
       // Dialogue actions
       createDialogue: (title: string, description?: string) => {
@@ -176,8 +168,6 @@ export const useDialogueStore = create<DialogueState>()(
           id: uuidv4(),
           speakerId,
           text,
-          tags: [],
-          isGenerating: false,
         };
 
         get().updateDialogue(currentDialogue.id, {
@@ -214,43 +204,13 @@ export const useDialogueStore = create<DialogueState>()(
         get().updateDialogue(currentDialogue.id, { lines });
       },
 
-      setLineGenerating: (lineId: string, isGenerating: boolean) => {
-        const currentDialogue = get().getCurrentDialogue();
-        if (!currentDialogue) return;
-
-        get().updateDialogue(currentDialogue.id, {
-          lines: currentDialogue.lines.map((l) =>
-            l.id === lineId ? { ...l, isGenerating } : l
-          ),
-        });
-      },
-
-      setLineAudio: (lineId: string, audioUrl: string) => {
-        const currentDialogue = get().getCurrentDialogue();
-        if (!currentDialogue) return;
-
-        get().updateDialogue(currentDialogue.id, {
-          lines: currentDialogue.lines.map((l) =>
-            l.id === lineId ? { ...l, generatedAudio: audioUrl } : l
-          ),
-        });
-      },
-
       // API actions
       setApiKey: (key: string) => {
         set({ apiKey: key });
       },
 
-      setApiKeyValid: (valid: boolean) => {
-        set({ isApiKeyValid: valid });
-      },
-
       setVoices: (voices: ElevenLabsVoice[]) => {
         set({ voices });
-      },
-
-      setLoadingVoices: (loading: boolean) => {
-        set({ isLoadingVoices: loading });
       },
     }),
     {
