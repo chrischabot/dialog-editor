@@ -1,22 +1,22 @@
 # Dialogue Director
 
-*Where conversations come to life, and your wallet doesn't cry.*
+*Where conversations come to life.*
 
-A visual dialogue editor for the ElevenLabs Text to Dialogue API that transforms the tedious art of multi-speaker audio generation into something approaching joy. Built for developers, writers, and anyone who's ever stared at a JSON payload wondering why their characters sound like caffeinated robots.
+A visual dialogue editor for the ElevenLabs Text to Dialogue API that transforms multi-speaker audio generation into an intuitive, iterative workflow. Built for developers, writers, and content creators who want to get the most out of ElevenLabs' powerful voice synthesis.
 
 ## The Problem We're Solving
 
-Creating multi-speaker dialogue with AI voices is expensive. Not "skip-your-latte" expensive—more like "explain-this-to-accounting" expensive. Every generation costs credits, and when you're iterating on tone, timing, and emotional delivery, those credits vanish faster than free pizza at a standup.
+Creating great dialogue takes iteration. You tweak the wording, adjust the emotional delivery, experiment with different voices—and each generation teaches you something new about what works. **Dialogue Director** is designed to make that creative iteration as fast and efficient as possible, so you can focus on crafting the perfect scene rather than managing API calls.
 
-**Dialogue Director** is your frugal companion in this endeavor.
+Think of it as a development environment purpose-built for the Text to Dialogue API.
 
 ## Features
 
-### Two Modes, One Mission: Save Your Credits
+### Two Modes for Different Stages of Creation
 
-- **Fast Mode** — Uses `eleven_flash_v2_5` via the standard TTS API at **half the credit cost**. Perfect for rapid iteration when you're still figuring out if your villain should sound menacing or just mildly annoyed.
+- **Fast Mode** — Uses `eleven_flash_v2_5` via the standard TTS API for rapid iteration. Perfect for drafting and experimenting when you're still figuring out if your villain should sound menacing or just mildly annoyed.
 
-- **Full Mode** — Unleashes `eleven_v3` through the Dialogue API for that buttery-smooth conversational flow. Natural interruptions, emotional nuance, the works. Save this for when the script is locked.
+- **Full Mode** — Unleashes `eleven_v3` through the Dialogue API for that buttery-smooth conversational flow. Natural interruptions, emotional nuance, the works. Use this when you're ready for production quality.
 
 ### Audio Caching That Actually Remembers
 
@@ -24,7 +24,7 @@ Every generated audio clip gets cached in **IndexedDB**—right there in your br
 
 The cache uses content-based keys (`text:voiceId:modelId`), so it's smart about what's actually changed. Clips expire after 48 hours, because even loyalty has its limits.
 
-When your full dialogue is cached, the "Generate All" button transforms into "Play All"—a small UX flourish that saves you from accidentally regenerating a $5 audio file.
+When your full dialogue is cached, the "Generate All" button transforms into "Play All"—a small UX flourish that prevents accidental regeneration when you just want to listen again.
 
 ### Developer Tools That Don't Insult Your Intelligence
 
@@ -141,4 +141,4 @@ MIT. Use it, fork it, make it your own. Just don't blame us when your characters
 
 *"The difference between the right word and the almost right word is the difference between lightning and a lightning bug."* — Mark Twain
 
-*"The difference between the right voice and the almost right voice is the difference between a $0.50 generation and a $50 debugging session."* — Dialogue Director Proverb
+*"The difference between the right voice and the almost right voice is the difference between a good scene and a great one."* — Dialogue Director Proverb
