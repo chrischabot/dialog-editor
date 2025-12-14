@@ -48,18 +48,6 @@ The Tag Palette puts ElevenLabs' audio tag system at your fingertips. Emotions, 
 
 See your character count and estimated credit cost before you hit generate. The estimator knows that audio tags don't count toward credits (they're instructions, not content), so your numbers are actually accurate.
 
-## Tech Stack
-
-Built with the modern web stack that makes developers happy:
-
-- **Next.js 16** — React 19, App Router, the whole shebang
-- **TypeScript** — Because `any` is not a personality
-- **Tailwind CSS v4** — Utility-first styling that doesn't make you hate CSS
-- **Zustand** — State management that stays out of your way, with `persist` middleware for localStorage
-- **IndexedDB** — Browser-native storage for audio blobs. No server required, no data leaving your machine
-- **Radix UI** — Accessible primitives that don't look like 2012
-- **ElevenLabs SDK** — `@elevenlabs/elevenlabs-js` v2.27.0, the official package
-
 ## Getting Started
 
 ### Prerequisites
@@ -88,23 +76,6 @@ Open [http://localhost:3000](http://localhost:3000) and enter your API key when 
 ```bash
 npm run build
 npm start
-```
-
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── page.tsx           # Home dashboard
-│   └── dialogues/[id]/    # Dialogue editor
-├── components/ui/          # Reusable UI components
-├── lib/
-│   ├── elevenlabs/        # SDK wrapper and logger
-│   └── audioCache.ts      # IndexedDB caching layer
-├── stores/
-│   └── dialogueStore.ts   # Zustand state management
-└── types/
-    └── dialogue.ts        # TypeScript interfaces
 ```
 
 ## How the Caching Works
