@@ -12,31 +12,31 @@ Think of it as a development environment purpose-built for the Text to Dialogue 
 
 ## Features
 
-### Two Modes for Different Stages of Creation
+### Two Generation Modes
 
-- **Fast Mode** — Uses `eleven_flash_v2_5` via the standard TTS API for rapid iteration. Perfect for drafting and experimenting when you're still figuring out if your villain should sound menacing or just mildly annoyed.
+- **Fast Mode** — Uses `eleven_flash_v2_5` via the standard TTS API for rapid iteration. Great for drafting and experimenting.
 
-- **Full Mode** — Unleashes `eleven_v3` through the Dialogue API for that buttery-smooth conversational flow. Natural interruptions, emotional nuance, the works. Use this when you're ready for production quality.
+- **Full Mode** — Uses `eleven_v3` through the Dialogue API for natural conversational flow with interruptions and emotional nuance. Use this for production quality.
 
-### Audio Caching That Actually Remembers
+### Local Audio Caching
 
-Every generated audio clip gets cached in **IndexedDB**—right there in your browser, persisting across sessions like a loyal golden retriever. Change your text? The cache invalidates automatically. Same text, same voice, same model? Instant playback, zero credits spent.
+Generated audio clips are cached locally in your browser, persisting across sessions. Change your text? The cache invalidates automatically. Same text, same voice, same model? Instant playback, zero credits spent.
 
-The cache uses content-based keys (`text:voiceId:modelId`), so it's smart about what's actually changed. Clips expire after 48 hours, because even loyalty has its limits.
+The cache uses content-based keys (`text:voiceId:modelId`), so it knows exactly what's changed. Clips expire after 48 hours.
 
-When your full dialogue is cached, the "Generate All" button transforms into "Play All"—a small UX flourish that prevents accidental regeneration when you just want to listen again.
+When your full dialogue is cached, the "Generate All" button transforms into "Play All" to prevent accidental regeneration.
 
-### Developer Tools That Don't Insult Your Intelligence
+### Developer Tools Panel
 
-Pop open the DevTools drawer (it's resizable, because we respect your screen real estate) and you'll find:
+A resizable DevTools drawer with:
 
-- **Network Tab** — Every API request and response, timestamped and color-coded. See exactly what's going over the wire.
-- **Logs Tab** — SDK activity, debug messages, warnings. The stuff you need when things go sideways.
-- **Payload Tab** — The actual JSON being sent to ElevenLabs, formatted or minified. Copy it, paste it into curl, debug at 2 AM. We don't judge.
+- **Network Tab** — API requests and responses, timestamped and color-coded.
+- **Logs Tab** — SDK activity, debug messages, and warnings.
+- **Payload Tab** — The JSON payload being sent to ElevenLabs, formatted or minified. Copy it for use in your own code.
 
-### Audio Tags Made Visual
+### Audio Tag Palette
 
-The Tag Palette puts ElevenLabs' audio tag system at your fingertips. Emotions, delivery styles, sound effects, accents—click to insert, no syntax memorization required.
+The Tag Palette provides easy access to ElevenLabs' audio tag system. Emotions, delivery styles, sound effects, accents—click to insert.
 
 ```
 [excited] I can't believe we won!
@@ -44,9 +44,9 @@ The Tag Palette puts ElevenLabs' audio tag system at your fingertips. Emotions, 
 [laughs] That's the funniest thing I've heard all day!
 ```
 
-### Cost Estimation That Doesn't Lie
+### Cost Estimation
 
-See your character count and estimated credit cost before you hit generate. The estimator knows that audio tags don't count toward credits (they're instructions, not content), so your numbers are actually accurate.
+See your character count and estimated credit cost before generating. Audio tags don't count toward credits (they're instructions, not content), so the estimates are accurate.
 
 ## Getting Started
 
@@ -88,7 +88,7 @@ const dialogueKey = `dialogue:${JSON.stringify(lineData)}:${modelId}`;
 // Check cache before generating
 const cached = await getCachedAudio(cacheKey);
 if (cached) {
-  return cached; // Free! (in credits, anyway)
+  return cached; // No API call needed
 }
 
 // Generate and cache
@@ -102,14 +102,8 @@ See [docs/SDK_FINDINGS.md](docs/SDK_FINDINGS.md) — developed and maintained du
 
 ## Contributing
 
-Found a bug? Want a feature? Open an issue. PRs welcome—just keep the code clean and the jokes cleaner.
+Found a bug? Want a feature? Open an issue. PRs welcome.
 
 ## License
 
-MIT. Use it, fork it, make it your own. Just don't blame us when your characters start having existential crises.
-
----
-
-*"The difference between the right word and the almost right word is the difference between lightning and a lightning bug."* — Mark Twain
-
-*"The difference between the right voice and the almost right voice is the difference between a good scene and a great one."* — Dialogue Director Proverb
+MIT. See [LICENSE](LICENSE) for details.
