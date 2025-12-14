@@ -98,7 +98,7 @@ await setCachedAudio(cacheKey, audio);
 
 ## API Reference
 
-See [docs/SDK_FINDINGS.md](docs/SDK_FINDINGS.md) for exhaustive documentation on the ElevenLabs SDK, including gotchas, workarounds, and hard-won wisdom from the trenches.
+See [docs/SDK_FINDINGS.md](docs/SDK_FINDINGS.md) — developed and maintained during the project to help AI coding agents (like Claude or Codex) understand the ElevenLabs SDK based on real-world learnings.
 
 ## Contributing
 
